@@ -1,0 +1,37 @@
+{
+  "name": "puppeteer-ecommerce-scraper",
+  "version": "0.1.0",
+  "description": "Client-side rendering approach for extracting product data from ecommerce websites with pagination using undetectable puppeteer-cluster",
+  "main": "src/index.js",
+  "dependencies": {
+    "dotenv": "^16.4.1",
+    "puppeteer-cluster": "^0.23.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/18520339/puppeteer-ecommerce-scraper.git"
+  },
+  "keywords": [
+    "puppeteer",
+    "ecommerce",
+    "scraper",
+    "cluster",
+    "pagination",
+    "undetectable",
+    "proxy",
+    "tiki",
+    "shopee",
+    "lazada"
+  ],
+  "author": "Quan Dang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/18520339/puppeteer-ecommerce-scraper/issues"
+  },
+  "homepage": "https://github.com/18520339/puppeteer-ecommerce-scraper#readme"
+}
