@@ -6,12 +6,15 @@ puppeteer.use(StealthPlugin());
 
 async function clusterWrapper({
 	func,
-	keywords,
+	queueEntries,
 	proxyEndpoint = '',
 	monitor = false,
 	useProfile = false, // After solving Captcha, save uour profile, so you may avoid doing it next time
 	otherConfigs = {},
 }) {
+	if (!Array.isArray(queueEntries) && (typeof queueEntries !== 'object' || queueEntries === null))
+		throw new Error('queueEntries must be an array or an object');
+
 	try {
 		var { origin, username, password } = new URL(proxyEndpoint);
 	} catch (_) {
@@ -19,7 +22,7 @@ async function clusterWrapper({
 		origin = username = password = null;
 	}
 
-	const maxConcurrency = Math.min(keywords.length, 5);
+	const maxConcurrency = Math.min(Object.keys(queueEntries).length, 5);
 	const perBrowserOptions = [...Array(maxConcurrency).keys()].map(i => {
 		const puppeteerOptions = {
 			...{
@@ -47,16 +50,16 @@ async function clusterWrapper({
 		console.log(err.message, data);
 	});
 
-	await cluster.task(async ({ page, data: keyword }) => {
+	await cluster.task(async ({ page, data: queueData }) => {
 		const notBlankPage = await loadNotBlankPage(page, 'https://ipinfo.io/json', username, password);
 		const content = await notBlankPage.$eval('body', el => el.innerText);
-		console.log(`IP Information for scraping ${keyword}: ${content}`);
+		console.log(`IP Information for scraping ${queueData}: ${content}`);
 
-		if (typeof func === 'function') await func(notBlankPage, keyword);
+		if (typeof func === 'function') await func(notBlankPage, queueData);
 		else console.log('Function not found.');
 	});
 
-	for (const keyword of keywords) await cluster.queue(keyword);
+	for (const queueData of queueEntries) await cluster.queue(queueData);
 	await cluster.idle();
 	await cluster.close();
 }
