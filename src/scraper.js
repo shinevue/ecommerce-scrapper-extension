@@ -1,5 +1,5 @@
-const path = require('path');
 const fs = require('fs');
+const { createFile } = require('./helpers');
 
 async function scrapeWithPagination({
 	page, // Puppeteer page object
@@ -76,15 +76,6 @@ function autoScroll(delay, scrollStep, direction) {
 	});
 }
 
-function createFile(filePath, header = '') {
-	const dir = path.dirname(filePath);
-	fs.mkdirSync(dir, { recursive: true });
-	fs.writeFile(filePath, header, 'utf-8', err => {
-		if (err) throw err;
-		console.log(`${filePath} created`);
-	});
-}
-
 function saveProduct(products, productInfo, filePath) {
 	if (!productInfo.some(value => !value)) {
 		products.push(productInfo);
@@ -109,7 +100,7 @@ async function navigatePage({ page, nextPageSelector, disabledSelector, sleep = 
 	if (notLastPage)
 		await Promise.all([page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 0 }), page.click(nextPageSelector)]);
 	await new Promise(resolve => setTimeout(resolve, sleep));
-	return notLastPage;
+	return notLastPage; // Return true if there is a next page
 }
 
 module.exports = { scrapeWithPagination, autoScroll, createFile, saveProduct, navigatePage };

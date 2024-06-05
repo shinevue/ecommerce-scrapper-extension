@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { clusterWrapper, createFile, saveProduct, navigatePage } = require('puppeteer-ecommerce-scraper');
+const { clusterWrapper, scraper, helpers } = require('puppeteer-ecommerce-scraper');
 
 async function extractTiki(page, queueData) {
 	const products = [];
@@ -7,7 +7,7 @@ async function extractTiki(page, queueData) {
 	let notLastPage = true;
 
 	const filePath = `./data/tiki-${queueData}.csv`;
-	createFile(filePath, 'title,price,imgUrl\n');
+	helpers.createFile(filePath, 'title,price,imgUrl\n');
 
 	const url = 'https://tiki.vn/search?q=' + queueData;
 	await page.goto(url, { waitUntil: 'networkidle2', timeout: 0 });
@@ -24,15 +24,15 @@ async function extractTiki(page, queueData) {
 					productDOM.querySelector('.image-wrapper img')?.getAttribute('srcset').split(' ')[0],
 				];
 			}, node);
-			saveProduct(products, productInfo, filePath);
+			scraper.saveProduct(products, productInfo, filePath);
 		}
 		console.log(
 			`${filePath}\t`,
 			`| Total products now: ${products.length}\t`,
 			`| Page: ${totalPages}/\u221E\t`,
-			`| URL: ${url}`
+			`| URL: ${await page.url()}`
 		);
-		notLastPage = await navigatePage({
+		notLastPage = await scraper.navigatePage({
 			page,
 			nextPageSelector: 'div:nth-child(3) a.arrow',
 			disabledSelector: 'div:nth-child(3) a.arrow.disabled',

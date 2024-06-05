@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { clusterWrapper, autoScroll, createFile, saveProduct, navigatePage } = require('puppeteer-ecommerce-scraper');
+const { clusterWrapper, scraper, helpers } = require('puppeteer-ecommerce-scraper');
 
 async function extractLazada(page, queueData) {
 	const products = [];
@@ -7,14 +7,14 @@ async function extractLazada(page, queueData) {
 	let notLastPage = true;
 
 	const filePath = `./data/lazada-${queueData}.csv`;
-	createFile(filePath, 'title,price,imgUrl\n');
+	helpers.createFile(filePath, 'title,price,imgUrl\n');
 
 	const url = 'https://www.lazada.vn/catalog/?q=' + queueData;
 	await page.goto(url, { waitUntil: 'networkidle2', timeout: 0 });
 
 	while (notLastPage) {
 		await page.waitForSelector('[data-qa-locator="product-item"]', { visible: true, hidden: false, timeout: 0 });
-		await page.evaluate(autoScroll.toString());
+		await page.evaluate(scraper.autoScroll.toString()); // Inject autoScroll function
 		await page.evaluate("autoScroll(500, 500, 'bottom').then(() => autoScroll(500, 500, 'top'))");
 		await page.evaluate("autoScroll(500, 500, 'bottom').then(() => autoScroll(500, 500, 'top'))");
 
@@ -31,15 +31,15 @@ async function extractLazada(page, queueData) {
 					imgUrl.match(/\.(jpeg|jpg|gif|png|bmp|webp)$/) ? imgUrl : '',
 				];
 			}, node);
-			saveProduct(products, productInfo, filePath);
+			scraper.saveProduct(products, productInfo, filePath);
 		}
 		console.log(
 			`${filePath}\t`,
 			`| Total products now: ${products.length}\t`,
 			`| Page: ${totalPages}/\u221E\t`,
-			`| URL: ${url}`
+			`| URL: ${await page.url()}`
 		);
-		notLastPage = await navigatePage({
+		notLastPage = await scraper.navigatePage({
 			page,
 			nextPageSelector: '.ant-pagination-next button',
 			disabledSelector: '.ant-pagination-next.ant-pagination-disabled button',

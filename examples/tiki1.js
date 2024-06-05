@@ -1,8 +1,8 @@
 require('dotenv').config();
-const { scrapeWithPagination, clusterWrapper } = require('puppeteer-ecommerce-scraper');
+const { clusterWrapper, scraper } = require('puppeteer-ecommerce-scraper');
 
 async function extractTiki(page, queueData) {
-	const { products } = await scrapeWithPagination({
+	const { products } = await scraper.scrapeWithPagination({
 		page, // Puppeteer page object
 		scrapingConfig: {
 			url: `https://tiki.vn/search?q=${queueData}`,
