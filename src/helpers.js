@@ -1,5 +1,6 @@
 const fs = require('fs');
 const os = require('os');
+const path = require('path');
 
 function isFileExists(installedPath) {
 	try {
@@ -8,6 +9,29 @@ function isFileExists(installedPath) {
 	} catch (e) {
 		return false;
 	}
+}
+
+function createFile(filePath, header = '') {
+	const dir = path.dirname(filePath);
+	fs.mkdirSync(dir, { recursive: true });
+	fs.writeFile(filePath, header, 'utf-8', err => {
+		if (err) throw err;
+		console.log(`${filePath} created`);
+	});
+}
+
+function getWebName(url) {
+	const parsedUrl = new URL(url);
+	const hostnameParts = parsedUrl.hostname.split('.');
+	return hostnameParts[hostnameParts.length - 1].length === 2
+		? hostnameParts[hostnameParts.length - 3]
+		: hostnameParts[hostnameParts.length - 2];
+}
+
+function url2FileName(url) {
+	const parsedUrl = new URL(url);
+	const fileName = parsedUrl.hostname.replace(/^www\./, '') + parsedUrl.pathname + parsedUrl.search;
+	return fileName.replace(/[^a-zA-Z0-9]/g, '_');
 }
 
 // Cannot use the same profile for multiple browsers => Not working with CONCURRENCY_BROWSER
@@ -52,10 +76,17 @@ async function loadNotBlankPage(page, url, proxyUsername = '', proxyPassword = '
 	const notBlankPage = pagesArray[0];
 	await page.close(pagesArray[1]);
 
-	if (proxyUsername && proxyPassword)
-		await notBlankPage.authenticate({ username: proxyUsername, password: proxyPassword });
+	if (proxyUsername && proxyPassword) await notBlankPage.authenticate({ username: proxyUsername, password: proxyPassword });
 	await notBlankPage.goto(url, { waitUntil: 'networkidle2', timeout: 0 });
 	return notBlankPage;
 }
 
-module.exports = { isFileExists, getChromeProfilePath, getChromeExecutablePath, loadNotBlankPage };
+module.exports = {
+	isFileExists,
+	createFile,
+	getWebName,
+	url2FileName,
+	getChromeProfilePath,
+	getChromeExecutablePath,
+	loadNotBlankPage,
+};
