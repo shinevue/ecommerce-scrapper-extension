@@ -5,12 +5,12 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
 
 async function clusterWrapper({
-	func,
-	queueEntries,
-	proxyEndpoint = '',
-	monitor = false,
+	func, // Function to be executed on each queue entry
+	queueEntries, // Array or Object of queue entries
+	proxyEndpoint = '', // Must be in the form of http://username:password@host:port
+	monitor = false, // Monitor the progress of the cluster
 	useProfile = false, // After solving Captcha, save uour profile, so you may avoid doing it next time
-	otherConfigs = {},
+	otherConfigs = {}, // Other configurations for Puppeteer
 }) {
 	if (!Array.isArray(queueEntries) && (typeof queueEntries !== 'object' || queueEntries === null))
 		throw new Error('queueEntries must be an array or an object');
@@ -22,7 +22,7 @@ async function clusterWrapper({
 		origin = username = password = null;
 	}
 
-	const maxConcurrency = Math.min(Object.keys(queueEntries).length, 5);
+	const maxConcurrency = Math.min(Object.keys(queueEntries).length, 5); // Maximum 5 browsers
 	const perBrowserOptions = [...Array(maxConcurrency).keys()].map(i => {
 		const puppeteerOptions = {
 			...{
@@ -39,20 +39,18 @@ async function clusterWrapper({
 	console.log(`Configuration for ${maxConcurrency} browsers in Cluster:`, perBrowserOptions);
 
 	const cluster = await Cluster.launch({
-		concurrency: Cluster.CONCURRENCY_BROWSER,
-		maxConcurrency,
-		perBrowserOptions,
-		puppeteer,
-		monitor,
-		timeout: 1e7,
+		concurrency: Cluster.CONCURRENCY_BROWSER, // Run one browser per worker
+		maxConcurrency, // Maximum 5 browsers
+		perBrowserOptions, // Configuration for each browser
+		puppeteer, // Use puppeteer-extra
+		monitor, // Monitor the progress of the cluster
+		timeout: 1e7, // Wait for 10 seconds before closing the browser
 	});
-	cluster.on('taskerror', (err, data) => {
-		console.log(err.message, data);
-	});
+	cluster.on('taskerror', (err, data) => console.log(err.message, data));
 
 	await cluster.task(async ({ page, data: queueData }) => {
 		const notBlankPage = await loadNotBlankPage(page, 'https://ipinfo.io/json', username, password);
-		const content = await notBlankPage.$eval('body', el => el.innerText);
+		const content = await notBlankPage.$eval('body', el => el.innerText); // Get IP information
 		console.log(`IP Information for scraping ${queueData}: ${content}`);
 
 		if (typeof func === 'function') await func(notBlankPage, queueData);
@@ -60,7 +58,7 @@ async function clusterWrapper({
 	});
 
 	for (const queueData of queueEntries) await cluster.queue(queueData);
-	await cluster.idle();
+	await cluster.idle(); // Wait for all tasks to finish
 	await cluster.close();
 }
 
