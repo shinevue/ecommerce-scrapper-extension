@@ -44,7 +44,7 @@ async function scrapeWithPagination({
 			`${scrapingConfig.filePath}\t`,
 			`| Total products now: ${products.length}\t`,
 			`| Page: ${totalPages}/${paginationConfig.maxPages || '\u221E'}\t`,
-			`| URL: ${url}`
+			`| URL: ${await page.url()}`
 		);
 		notLastPage = await navigatePage({ page, ...paginationConfig });
 		totalPages += notLastPage;

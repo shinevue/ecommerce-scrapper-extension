@@ -1,14 +1,14 @@
 require('dotenv').config();
 const { scrapeWithPagination, clusterWrapper } = require('puppeteer-ecommerce-scraper');
 
-async function extractShopee(page, keyword) {
+async function extractShopee(page, queueData) {
 	const { products } = await scrapeWithPagination({
 		page, // Puppeteer page object
 		scrollConfig: { scrollDelay: 500, scrollStep: 500, numOfScroll: 2, direction: 'both' },
 		scrapingConfig: {
-			url: `https://shopee.vn/search?keyword=${keyword}`,
+			url: `https://shopee.vn/search?keyword=${queueData}`,
 			productSelector: '.shopee-search-item-result__item',
-			filePath: `./data/shopee-${keyword}.csv`,
+			filePath: `./data/shopee-${queueData}.csv`,
 			fileHeader: 'title,price,imgUrl\n',
 		},
 		paginationConfig: {
@@ -26,15 +26,15 @@ async function extractShopee(page, keyword) {
 			return [title?.replaceAll(',', '_'), price, imgUrl];
 		},
 	});
-	console.log(`[DONE] Fetched ${products.length} ${keyword} products from Shopee`);
+	console.log(`[DONE] Fetched ${products.length} ${queueData} products from Shopee`);
 }
 
 (async () => {
 	await clusterWrapper({
 		func: extractShopee,
-		keywords: ['android', 'iphone'],
+		queueEntries: ['android', 'iphone'],
 		proxyEndpoint: process.env.PROXY_ENDPOINT, // Must be in the form of http://username:password@host:port
 		monitor: false,
-		useProfile: false, // After solving Captcha, save uour profile, so you may avoid doing it next time
+		useProfile: false, // After solving Captcha, save your profile, so you may avoid doing it next time
 	});
 })();

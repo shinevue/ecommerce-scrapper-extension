@@ -1,15 +1,15 @@
 require('dotenv').config();
 const { clusterWrapper, autoScroll, createFile, saveProduct, navigatePage } = require('puppeteer-ecommerce-scraper');
 
-async function extractLazada(page, keyword) {
+async function extractLazada(page, queueData) {
 	const products = [];
 	let totalPages = 1;
 	let notLastPage = true;
 
-	const filePath = `./data/lazada-${keyword}.csv`;
+	const filePath = `./data/lazada-${queueData}.csv`;
 	createFile(filePath, 'title,price,imgUrl\n');
 
-	const url = 'https://www.lazada.vn/catalog/?q=' + keyword;
+	const url = 'https://www.lazada.vn/catalog/?q=' + queueData;
 	await page.goto(url, { waitUntil: 'networkidle2', timeout: 0 });
 
 	while (notLastPage) {
@@ -42,20 +42,20 @@ async function extractLazada(page, keyword) {
 		notLastPage = await navigatePage({
 			page,
 			nextPageSelector: '.ant-pagination-next button',
-			disabledSelector: '.ant-pagination-next button[disabled]',
+			disabledSelector: '.ant-pagination-next.ant-pagination-disabled button',
 			sleep: 1000, // in milliseconds
 		});
 		totalPages += notLastPage;
 	}
-	console.log(`[DONE] Fetched ${products.length} ${keyword} products from Shopee`);
+	console.log(`[DONE] Fetched ${products.length} ${queueData} products from Shopee`);
 }
 
 (async () => {
 	await clusterWrapper({
 		func: extractLazada,
-		keywords: ['android', 'iphone'],
+		queueEntries: ['android', 'iphone'],
 		proxyEndpoint: process.env.PROXY_ENDPOINT, // Must be in the form of http://username:password@host:port
 		monitor: false,
-		useProfile: true, // After solving Captcha, save uour profile, so you may avoid doing it next time
+		useProfile: true, // After solving Captcha, save your profile, so you may avoid doing it next time
 	});
 })();
