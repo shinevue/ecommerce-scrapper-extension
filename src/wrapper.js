@@ -1,4 +1,4 @@
-const { loadNotBlankPage, getChromeExecutablePath } = require('./helpers');
+const { getChromeExecutablePath } = require('./helpers');
 const { Cluster } = require('puppeteer-cluster');
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
@@ -9,7 +9,7 @@ async function clusterWrapper({
 	queueEntries, // Array or Object of queue entries
 	proxyEndpoint = '', // Must be in the form of http://username:password@host:port
 	monitor = false, // Monitor the progress of the cluster
-	useProfile = false, // After solving Captcha, save uour profile, so you may avoid doing it next time
+	useProfile = false, // After solving Captcha, save your profile, so you may avoid doing it next time
 	otherConfigs = {}, // Other configurations for Puppeteer
 }) {
 	if (!Array.isArray(queueEntries) && (typeof queueEntries !== 'object' || queueEntries === null))
@@ -60,6 +60,20 @@ async function clusterWrapper({
 	for (const queueData of queueEntries) await cluster.queue(queueData);
 	await cluster.idle(); // Wait for all tasks to finish
 	await cluster.close();
+}
+
+async function loadNotBlankPage(page, url, proxyUsername = '', proxyPassword = '') {
+	const browser = page.browser();
+	const context = browser.defaultBrowserContext();
+	await context.overridePermissions(url, []); // Reset permissions
+
+	const pagesArray = await browser.pages();
+	const notBlankPage = pagesArray[0];
+	await page.close(pagesArray[1]);
+
+	if (proxyUsername && proxyPassword) await notBlankPage.authenticate({ username: proxyUsername, password: proxyPassword });
+	await notBlankPage.goto(url, { waitUntil: 'networkidle2', timeout: 0 });
+	return notBlankPage;
 }
 
 module.exports = { clusterWrapper };

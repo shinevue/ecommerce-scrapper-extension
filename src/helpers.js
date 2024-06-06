@@ -2,9 +2,9 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-function isFileExists(installedPath) {
+function isFileExists(filePath) {
 	try {
-		fs.accessSync(installedPath, fs.constants.F_OK);
+		fs.accessSync(filePath, fs.constants.F_OK);
 		return true;
 	} catch (e) {
 		return false;
@@ -67,20 +67,6 @@ function getChromeExecutablePath() {
 	}
 }
 
-async function loadNotBlankPage(page, url, proxyUsername = '', proxyPassword = '') {
-	const browser = page.browser();
-	const context = browser.defaultBrowserContext();
-	await context.overridePermissions(url, []);
-
-	const pagesArray = await browser.pages();
-	const notBlankPage = pagesArray[0];
-	await page.close(pagesArray[1]);
-
-	if (proxyUsername && proxyPassword) await notBlankPage.authenticate({ username: proxyUsername, password: proxyPassword });
-	await notBlankPage.goto(url, { waitUntil: 'networkidle2', timeout: 0 });
-	return notBlankPage;
-}
-
 module.exports = {
 	isFileExists,
 	createFile,
@@ -88,5 +74,4 @@ module.exports = {
 	url2FileName,
 	getChromeProfilePath,
 	getChromeExecutablePath,
-	loadNotBlankPage,
 };

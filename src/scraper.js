@@ -103,4 +103,4 @@ async function navigatePage({ page, nextPageSelector, disabledSelector, sleep = 
 	return notLastPage; // Return true if there is a next page
 }
 
-module.exports = { scrapeWithPagination, autoScroll, createFile, saveProduct, navigatePage };
+module.exports = { scrapeWithPagination, autoScroll, saveProduct, navigatePage };
