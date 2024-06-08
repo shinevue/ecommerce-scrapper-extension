@@ -33,6 +33,7 @@ The functions and utilities of the scraper are divided into **3 modules**: `clus
 }.
 
 ## `clusterWrapper` [🔝](#functions-provided)
+
 ```js
 async function clusterWrapper({
     func, // Function to be executed on each queue entry
@@ -41,12 +42,13 @@ async function clusterWrapper({
     monitor = false, // Whether to monitor the progress of the scraping process
     useProfile = false, // Whether to use a consistent user profile
     otherConfigs = {}, // Other configurations for Puppeteer
-});
+})
 ```
 This function uses the [puppeteer-cluster](https://github.com/thomasdondorf/puppeteer-cluster) to launch multiple instances of the browser at the same time (**maximum 5**) and set up different web scraping tasks to execute for each queue entry with a default **timeout of 10 seconds** before closing the cluster. Here, the scraper uses several techniques to avoid detection:
 - [**puppeteer-extra-plugin-stealth**](https://github.com/berstend/puppeteer-extra/tree/master/packages/puppeteer-extra-plugin-stealth): This plugin applies evasion techniques to make the scraping activity appear more like normal browsing or a real user and less like a bot.
-- **User Profiles**: By using a consistent user profile (enabled by the `useProfile` option), the scraper can appear as a returning user rather than a new session each time. This option can be also benificial when solving CAPTCHAs as we may avoid doing the same thing next time.
-- **Proxies**: The scraper can route its requests through different proxy servers (specified by the `proxyEndpoint` option) to disguise its IP address and avoid IP-based blocking.
+- **useProfile**: By using a consistent user profile (enabled by the `useProfile` option), the scraper can appear as a returning user rather than a new session each time. This option can be also beneficial when solving CAPTCHAs as we **may** avoid doing the same thing next time.
+- **CAPTCHAs**: If the website requires solving CAPTCHAs, the script can wait until you solve it manually and then continue the scraping process.
+- **proxyEndpoint**: The scraper can route its requests through different proxy servers to disguise its IP address and avoid IP-based blocking.
 
 You can run the [test.js](./test.js) script to see the bot detection result when using this wrapper. Each task loads a page, gets the IP information, and then calls the `func` function with the [Puppeteer](https://github.com/puppeteer/puppeteer) page and queue data from the `queueEntries`.
 
@@ -129,3 +131,7 @@ This function identifies if "next page" aimed to navigate is not the last page b
 4. **url2FileName(`url`)**: Converts a URL into a filename-safe string by removing invalid characters.
 5. **getChromeProfilePath()**: Returns the path to the Chrome profile directory on different platforms (Windows, macOS, Linux).
 6. **getChromeExecutablePath()**: Returns the path to the Chrome executable on different platforms (Windows, macOS, Linux).
+
+# Disclaimer
+
+This scraper is designed for educational purposes only. The user is responsible for complying with the terms of service of the websites being scraped. The scraper should be used responsibly and respectfully to avoid overloading the websites with requests and to prevent IP blocking or other forms of retaliation.
