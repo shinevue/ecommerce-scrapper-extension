@@ -10,6 +10,8 @@ const { scrapeWithPagination, autoScroll, saveProduct, navigatePage } = require(
 const { clusterWrapper } = require('./wrapper');
 
 module.exports = {
+	clusterWrapper,
+	scraper: { scrapeWithPagination, autoScroll, saveProduct, navigatePage },
 	helpers: {
 		isFileExists,
 		createFile,
@@ -18,6 +20,4 @@ module.exports = {
 		getChromeProfilePath,
 		getChromeExecutablePath,
 	},
-	scraper: { scrapeWithPagination, autoScroll, saveProduct, navigatePage },
-	clusterWrapper,
 };

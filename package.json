@@ -1,6 +1,6 @@
 {
   "name": "puppeteer-ecommerce-scraper",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "Client-side rendering approach for extracting product data from ecommerce websites with pagination using undetectable puppeteer-cluster",
   "main": "src/index.js",
   "dependencies": {
@@ -24,10 +24,7 @@
     "cluster",
     "pagination",
     "undetectable",
-    "proxy",
-    "tiki",
-    "shopee",
-    "lazada"
+    "proxy"
   ],
   "author": "Quan Dang",
   "license": "ISC",
