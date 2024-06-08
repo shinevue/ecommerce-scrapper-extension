@@ -12,6 +12,6 @@ const { clusterWrapper, helpers } = require('puppeteer-ecommerce-scraper');
 		queueEntries: ['https://bot.sannysoft.com', 'https://browserleaks.com/webrtc', 'https://browserleaks.com/javascript'],
 		proxyEndpoint: process.env.PROXY_ENDPOINT, // Must be in the form of http://username:password@host:port
 		monitor: false,
-		useProfile: true, // After solving Captcha, save uour profile, so you may avoid doing it next time
+		useProfile: true, // After solving Captcha, save your profile, so you may avoid doing it next time
 	});
 })();

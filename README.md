@@ -15,7 +15,7 @@ The [examples](./examples/) folder contains my example scripts for different e-c
 
 For example, the [tiki1.js](./examples/tiki1.js) script configures the scraper to navigate throughout the `Android` and `iPhone` product pages of [Tiki](https://tiki.vn/) (a Vietnamese ecommerce website) and extract each *product title*, *its price*, and *image URL* from them, using a consistent user profile and a proxy server. 
 
-This script only use 2 functions: [clusterWrapper](#clusterwrapper-) to wrap the scraping process and [scrapeWithPagination](#scraperscrapewithpagination-), an end-to-end function to scrape, paginate, and save the product data from the website automatically. If you want a more customized scraping process, you can use the other [functions provided](#functions-provided) in the different modules. I also provide scripts with post-fix `2` (such as [tiki2.js](./examples/tiki2.js)) to demonstrate how to use these functions to scrape the same website.
+This script only use 2 functions: [clusterWrapper](#clusterwrapper-) to wrap the scraping process and [scrapeWithPagination](#scraperscrapewithpagination-), an end-to-end function to scrape, paginate, and save the product data from the website automatically. If you want a more customized scraping process, you can use the other [functions provided](#functions-provided) in the different modules. I also provided scripts with post-fix `2` (such as [tiki2.js](./examples/tiki2.js)) to demonstrate how to use these functions to scrape the same website.
 
 # Functions Provided
 
@@ -43,14 +43,12 @@ async function clusterWrapper({
     otherConfigs = {}, // Other configurations for Puppeteer
 });
 ```
-
-This function uses the [puppeteer-cluster](https://github.com/thomasdondorf/puppeteer-cluster) to launch multiple instances of the browser at the same time (**maximum 5**) and set up different web scraping tasks to execute for each queue entry. Here, the scraper uses several techniques to avoid detection:
+This function uses the [puppeteer-cluster](https://github.com/thomasdondorf/puppeteer-cluster) to launch multiple instances of the browser at the same time (**maximum 5**) and set up different web scraping tasks to execute for each queue entry with a default **timeout of 10 seconds** before closing the cluster. Here, the scraper uses several techniques to avoid detection:
 - [**puppeteer-extra-plugin-stealth**](https://github.com/berstend/puppeteer-extra/tree/master/packages/puppeteer-extra-plugin-stealth): This plugin applies evasion techniques to make the scraping activity appear more like normal browsing or a real user and less like a bot.
 - **User Profiles**: By using a consistent user profile (enabled by the `useProfile` option), the scraper can appear as a returning user rather than a new session each time. This option can be also benificial when solving CAPTCHAs as we may avoid doing the same thing next time.
 - **Proxies**: The scraper can route its requests through different proxy servers (specified by the `proxyEndpoint` option) to disguise its IP address and avoid IP-based blocking.
 
-
-Each task loads a page, gets the IP information, and then calls the `func` function with the page and queue data. It sets a **timeout of 10 seconds** before closing the browser.
+You can run the [test.js](./test.js) script to see the bot detection result when using this wrapper. Each task loads a page, gets the IP information, and then calls the `func` function with the [Puppeteer](https://github.com/puppeteer/puppeteer) page and queue data from the `queueEntries`.
 
 ## `scraper`.scrapeWithPagination [🔝](#functions-provided)
 
