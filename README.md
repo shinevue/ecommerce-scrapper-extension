@@ -1,6 +1,6 @@
 # Puppeteer Ecommerce Scraper
 
-> Demo: 
+> Demo: https://youtu.be/KOoI-CLNHxU
 
 This is a flexible web scraper for extracting product data from various ecommerce websites:
 - It uses high-level API from [Puppeteer](https://github.com/puppeteer/puppeteer) to control **Chrome** or **Chromium**, making it capable of extracting data from websites that dynamically load content using JavaScript. 

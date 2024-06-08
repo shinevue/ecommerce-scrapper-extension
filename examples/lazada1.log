@@ -1,0 +1,63 @@
+Configuration for 2 browsers in Cluster: [
+  {
+    headless: false,
+    defaultViewport: false,
+    executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+    userDataDir: './tmp/profile1',
+    args: [ '--proxy-server=http://gate.nodemaven.com:8080' ]
+  },
+  {
+    headless: false,
+    defaultViewport: false,
+    executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+    userDataDir: './tmp/profile2',
+    args: [ '--proxy-server=http://gate.nodemaven.com:8080' ]
+  }
+]
+IP Information for scraping android: {
+  "ip": "74.135.63.228",
+  "hostname": "syn-074-135-063-228.res.spectrum.com",
+  "city": "Portsmouth",
+  "region": "Ohio",
+  "country": "US",
+  "loc": "38.7317,-82.9977",
+  "org": "AS10796 Charter Communications Inc",
+  "postal": "45662",
+  "timezone": "America/New_York",
+  "readme": "https://ipinfo.io/missingauth"
+}
+./data/lazada-android.csv created
+IP Information for scraping iphone: {
+  "ip": "41.143.105.196",
+  "city": "Nador",
+  "region": "Oriental",
+  "country": "MA",
+  "loc": "35.1681,-2.9335",
+  "org": "AS36903 Office National des Postes et Telecommunications ONPT (Maroc Telecom) / IAM",
+  "postal": "62024",
+  "timezone": "Africa/Casablanca",
+  "readme": "https://ipinfo.io/missingauth"
+}
+./data/lazada-iphone.csv created
+./data/lazada-iphone.csv         | Total products now: 40        | Page: 1/3     | URL: https://www.lazada.vn/catalog/?q=iphone
+./data/lazada-android.csv        | Total products now: 40        | Page: 1/3     | URL: https://www.lazada.vn/tag/android/?q=android&cat
+alog_redirect_tag=true
+./data/lazada-iphone.csv         | Total products now: 80        | Page: 2/3     | URL: https://www.lazada.vn/catalog/?page=2&q=iphone  
+./data/lazada-android.csv        | Total products now: 80        | Page: 2/3     | URL: https://www.lazada.vn/tag/android/?catalog_redir
+ect_tag=true&page=2&q=android
+Cannot write to ./data/lazada-iphone.csv as this item has empty value: [
+  'I14 Pro Max Chính Hãng 100% điện thoại di động 6.8 inch Full HD 8GB+256GB Pin 7800mAh hỗ trợ 2 thông minh SIM 4G/5G Android chơi game
+ COD',
+  '1.162.200 ',
+  ''
+]
+Cannot write to ./data/lazada-iphone.csv as this item has empty value: [
+  'ip13 pro max giá rẻ 100% Android 6.6 Inch 2 SIM Cuộc gọi Chơi trò chơi thông minh (6+64GB) bộ nhớ điện thoại di động máy CHÍNH HÃNGợt
+ Chơi Game nặng',
+  '1.135.990 ',
+  ''
+]
+./data/lazada-iphone.csv         | Total products now: 118       | Page: 3/3     | URL: https://www.lazada.vn/catalog/?page=3&q=iphone  
+./data/lazada-android.csv        | Total products now: 120       | Page: 3/3     | URL: https://www.lazada.vn/tag/android/?catalog_redirect_tag=true&page=3&q=android
+[DONE] Fetched 118 iphone products from Lazada
+[DONE] Fetched 120 android products from Lazada
